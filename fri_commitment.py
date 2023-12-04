@@ -3,7 +3,7 @@ import random
 from polynomial import Polynomial
 
 
-MODULO = 100
+MODULO = 10
 
 # For learning purposes, easily verifiable > cryptographically secure
 def hash(value1, value2):
@@ -47,6 +47,9 @@ def verify_point_value(point, value, merkle_proof):
     for triplet in merkle_proof:
         if hash(triplet[1], triplet[2]) != triplet[0]:
             return False
+    for i in range(1, len(merkle_proof)):
+        if merkle_proof[i - 1][0] != merkle_proof[i][1] and merkle_proof[i - 1][0] != merkle_proof[i][2]:
+            return False
     return True
 
 
@@ -70,13 +73,28 @@ if __name__ == "__main__":
     Q_com = FRICommitment(Q, NUM_POINTS)
     R_com = FRICommitment(R, NUM_POINTS)
     print(f"P(x) = Q(x^2) + x * R(x^2)\nQ = {Q}\nR = {R}")
-    print(f"Q root {Q_com.hashes[-1][0]}, R root {R_com.hashes[-1][0]}")
+    print(f"Q merkle root {Q_com.hashes[-1][0]}, R merkle root {R_com.hashes[-1][0]}")
     r = random.randint(0, MODULO - 1)
     S = Q + R * r
     S_com = FRICommitment(S, NUM_POINTS)
-    print(f"r = {r}\nS = {S}\nS root {S_com.hashes[-1][0]}")
+    print(f"r = {r}")
+    print(f"S = {S}")
+    print(f"S merkle root {S_com.hashes[-1][0]}")
+    print()
 
     point = random.randint(0, NUM_POINTS - 1)
+    squared = (point * point) % MODULO
+    print(f"Random coordinate point for verification {point}, squared {squared}")
+    print(f"P({point}) = {P(point)}\nQ({squared}) = {Q(squared)}\nR({squared}) = {R(squared)}")
+    print(f"Q(x^2) + x * R(x^2) = {(Q(squared) + point * R(squared)) % MODULO}")
+
     P_proof = P_com.prove_point_value(point)
-    print(f"P({point}) = {P(point)}\nProof {P_proof}")
+    print(f"P proof {P_proof}")
     print("Verification: ", verify_point_value(point, P(point), P_proof))
+    Q_proof = Q_com.prove_point_value(squared)
+    print(f"Q proof {Q_proof}")
+    print("Verification: ", verify_point_value(squared, Q(squared), Q_proof))
+    R_proof = R_com.prove_point_value(squared)
+    print(f"R proof {R_proof}")
+    print("Verification: ", verify_point_value(squared, R(squared), R_proof))
+    print()
