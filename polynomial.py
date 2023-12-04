@@ -61,20 +61,28 @@ class Polynomial:
 
     def __mul__(self, other):
         """
-        Multiplies this polynomial with another polynomial.
+        Multiplies this polynomial with another polynomial or a scalar.
         """
-        if self.p != other.p:
-            raise ValueError("Cannot multiply polynomials in different fields")
+        if isinstance(other, Polynomial):
+            if self.p != other.p:
+                raise ValueError("Cannot multiply polynomials in different fields")
 
-        # Prepare the result array
-        result = [0] * (len(self.coefficients) + len(other.coefficients) - 1)
+            # Prepare the result array for polynomial multiplication
+            result = [0] * (len(self.coefficients) + len(other.coefficients) - 1)
 
-        # Perform multiplication
-        for i in range(len(self.coefficients)):
-            for j in range(len(other.coefficients)):
-                result[i + j] = (result[i + j] + self.coefficients[i] * other.coefficients[j]) % self.p
+            # Perform polynomial multiplication
+            for i in range(len(self.coefficients)):
+                for j in range(len(other.coefficients)):
+                    result[i + j] = (result[i + j] + self.coefficients[i] * other.coefficients[j]) % self.p
+            return Polynomial(result, self.p)
 
-        return Polynomial(result, self.p)
+        elif isinstance(other, int):
+            # Scalar multiplication
+            result = [(coeff * other) % self.p for coeff in self.coefficients]
+            return Polynomial(result, self.p)
+
+        else:
+            raise ValueError("Can only multiply by a scalar or another Polynomial")
 
     def __truediv__(self, other):
         """
