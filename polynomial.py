@@ -113,8 +113,8 @@ class Polynomial:
 
 if __name__ == "__main__":
     # Example usage
-    p1 = Polynomial([4, 4, 4], 5)  # Represents 3x^2 + 2x + 1 in Z_5
-    p2 = Polynomial([3, 3], 5)     # Represents x + 4 in Z_5
+    p1 = Polynomial([2, 4, 4], 5)  # Represents 4x^2 + 4x + 2 in Z_5
+    p2 = Polynomial([3, 3], 5)     # Represents 3x + 3 in Z_5
 
     # Polynomial addition and multiplication
     sum_poly = p1 + p2
@@ -124,8 +124,8 @@ if __name__ == "__main__":
     print(f"{p1} * {p2} = {product_poly}")
 
     # Example usage
-    p1 = Polynomial([1, 0, 5, 4], 7)  # Represents x^3 + 5x + 4 in Z_7
-    p2 = Polynomial([1, 2], 7)        # Represents x + 2 in Z_7
+    p1 = Polynomial([1, 0, 5, 4], 7)  # Represents 4x^3 + 5x^2 + 1 in Z_7
+    p2 = Polynomial([1, 2], 7)        # Represents 2x + 1 in Z_7
 
     # Polynomial division
     quotient, remainder = p1 / p2
